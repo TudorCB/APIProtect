@@ -1,0 +1,107 @@
+
+swagger: '2.0'
+info:
+  title: API Performance Monitoring System
+  description: Real-time API performance monitoring system
+  version: 1.0.0
+host: localhost:3000
+basePath: /api
+schemes:
+  - https
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      description: Creates a new user
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+      responses:
+        201:
+          description: User created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        500:
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  /users/{userId}:
+    get:
+      summary: Get a user by ID
+      description: Retrieves a user by ID
+      parameters:
+        - in: path
+          name: userId
+          description: User ID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: User found
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+        404:
+          description: User not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  /metrics:
+    get:
+      summary: Get API performance metrics
+      description: Retrieves API performance metrics
+      responses:
+        200:
+          description: Metrics retrieved successfully
+          schema:
+            type: object
+            properties:
+              avgResponseTime:
+                type: number
+              errorRate:
+                type: number
+              throughput:
+                type: number
+        500:
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+

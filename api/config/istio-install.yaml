@@ -1,0 +1,21 @@
+
+Code:
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-operator
+spec:
+  profile: default
+  hub: docker.io/istio
+  tag: 1.12.0
+  values:
+    global:
+      proxy:
+        autoInject: enabled
+      useMCP: true
+    pilot:
+      autoscaleEnabled: true
+    galley:
+      validationMeshGateway: true
+    citadel:
+      autoscaleEnabled: true

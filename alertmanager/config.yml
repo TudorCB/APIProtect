@@ -1,0 +1,25 @@
+
+
+global:
+  resolve_timeout: 5m
+
+receivers:
+  - name: email-notifications
+    email_configs:
+      - to: ['devops@example.com']
+        from: 'alertmanager@example.com'
+        smarthost: 'smtp.example.com:587'
+        auth:
+          username: 'alertmanager'
+          password: 'password'
+
+routes:
+  - receiver: email-notifications
+    group_by: [job]
+    group_wait: 10s
+    group_interval: 10s
+    repeat_interval: 1h
+    labels:
+      - job
+      - instance
+

@@ -1,0 +1,44 @@
+
+---
+- name: Automated API Security Remediation
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+
+  tasks:
+  - name: Install required packages
+    apt:
+      name: python3-pip
+      state: present
+
+  - name: Install OWASP ZAP and Burp Suite
+    pip:
+      name: owasp-zap,burp-suite
+      state: present
+
+  - name: Configure OWASP ZAP
+    template:
+      src: templates/zap_config.xml.j2
+      dest: /etc/owasp-zap/config.xml
+      mode: '0644'
+    notify: restart owasp-zap
+
+  - name: Configure Burp Suite
+    template:
+      src: templates/burp_config.xml.j2
+      dest: /etc/burp-suite/config.xml
+      mode: '0644'
+    notify: restart burp-suite
+
+  - name: Run OWASP ZAP scan
+    command: owasp-zap -config /etc/owasp-zap/config.xml -scan {{ api_url }}
+
+  - name: Run Burp Suite scan
+    command: burp-suite -config /etc/burp-suite/config.xml -scan {{ api_url }}
+
+  - name: Parse scan results
+    script: parse_results.py
+
+  - name: Remediate vulnerabilities
+    script: remediate_vulnerabilities.py
+
